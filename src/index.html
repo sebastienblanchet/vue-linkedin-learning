@@ -33,12 +33,38 @@
   .neo-list-leave-active {
     transition: all 1s linear;
   }
+
+  .spin-enter-active {
+    animation: spin-steps 2s;
+  }
+
+  /*  animations 
+  please make this stop
+   */
+  @keyframes spin-steps {
+    0% {
+      transform: scale(1) rotate(0);
+    }
+
+    50% {
+      transform: scale(10) rotate(360deg);
+    }
+
+    100% {
+      transform: scale(1) rotate(1080deg);
+    }
+  }
 </style>
 
 <div id="app">
   <div class="container">
     <div class="card mt-5">
-      <h2 class="card-header">Near-Earth Objects</h2>
+      <h2 class="card-header">
+        Near-Earth
+        <transition name="spin" appear>
+          <span style="display:inline-block">Objects</span>
+        </transition>
+      </h2>
       <transition name="shooting-star">
         <div class="m-3" v-cloak v-if="numAsteroids > 0 && showSummary">
           <p>showing {{numAsteroids}} items</p>
@@ -56,9 +82,6 @@
           <th>Miss Distance</th>
           <th>Remove</th>
         </thead>
-        <!-- transition group
-          tag
-        -->
         <tbody is="transition-group" name="neo-list" v-cloak>
           <tr v-for="(a, index) in asteroids" :key="a.neo_reference_id"
             :class="{highlight: isMissingData(a), 'shadow-sm': true}">
