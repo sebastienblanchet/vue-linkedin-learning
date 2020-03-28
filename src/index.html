@@ -12,6 +12,12 @@
   <div class="container">
     <div class="card mt-5">
       <h2 class="card-header">Near-Earth Objects</h2>
+      <!-- pretty much this is always the best practice
+      to hide un rendered shit -->
+      <div class="m-3" v-cloak v-if="numAsteroids > 0">
+        <p>showing {{numAsteroids}} items</p>
+        <p>{{closestObject}} has the shortest miss distance.</p>
+      </div>
       <table class="table">
         <thead class="thead-light">
           <th>#</th>
@@ -21,9 +27,6 @@
           <th>Remove</th>
         </thead>
         <tbody v-cloak>
-          <!-- same as v-bind key
-            fast way to access shit ALWAYS do this
-          -->
           <tr v-for="(a, index) in asteroids" :key="a.neo_reference_id">
             <td>{{index + 1}}</td>
             <td>{{a.name}}</td>
@@ -36,7 +39,6 @@
               </ul>
             </td>
             <td>
-              <!-- @click  ==> v-on:click -->
               <button @click="remove(index)" class="btn btn-warning">remove</button>
             </td>
           </tr>
@@ -54,6 +56,31 @@
     data: {
       asteroids: []
     },
+    // this allows some cleaner thing
+    // a list of functions with return props of undefined objects
+    // can clean shit with this
+    computed: {
+      numAsteroids: function () {
+        return this.asteroids.length;
+      },
+      closestObject: function () {
+        // clasic .filter, .map and .sort methods
+        var neosHavingData = this.asteroids.filter(function (neo) {
+          return neo.close_approach_data.length > 0;
+        });
+        var simpleNeos = neosHavingData.map(function (neo) {
+          return {
+            name: neo.name,
+            miles: neo.close_approach_data[0].miss_distance.miles
+          };
+        });
+        // could actually just use Vue.filters that you define on your own
+        var sortedNeos = simpleNeos.sort(function (a, b) {
+          return a.miles - b.miles;
+        });
+        return sortedNeos[0].name;
+      }
+    },
     created: function () {
       this.fetchAsteroids();
     },
@@ -66,6 +93,7 @@
             vm.asteroids = res.data.near_earth_objects.slice(0, 10);
           });
       },
+      // save a long inline render {{}}
       getCloseApproachDate: function (a) {
         if (a.close_approach_data.length > 0) {
           return a.close_approach_data[0].close_approach_date;
