@@ -2,17 +2,24 @@
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
   integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<style>
+  /* need to make sure that this is hidden prior */
+  [v-cloak] {
+    display: none;
+  }
+</style>
 
 <div id="app">
   <div class="container">
-    <form class="mt-5">
+    <form v-show="!submitted" class="mt-5">
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" v-model="email" id="email" class="form-control form-control-lg">
       </div>
-      <!-- SAME as <button type="submit"v-on:click.prevent="process" class="btn btn-primary">Submit</button> -->
       <button type="submit" @click.prevent="process" class="btn btn-primary">Submit</button>
     </form>
+    <!-- this will give pop up message -->
+    <h2 v-show="submitted" v-cloak class="mt-5">Thanks for signing up!</h2>
   </div>
 </div>
 
@@ -21,11 +28,13 @@
   var vm = new Vue({
     el: '#app',
     data: {
-      email: 'test@example.com'
+      email: 'test@example.com',
+      submitted: false // use with v-show
     },
     methods: {
+      // an @click process
       process: function () {
-        alert('Submitted ' + this.email);
+        this.submitted = true;
       }
     }
   });

@@ -1,3 +1,5 @@
 *arch/
 *.DS_Store
 **/node_modules/*
+.vscode/*
+*.sh
