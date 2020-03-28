@@ -10,10 +10,6 @@
 
 <div id="app">
   <div class="container">
-    <img :src="data.url" :title="data.title">
-    <div v-for="d in data">
-      {{d}}
-    </div>
   </div>
 </div>
 
@@ -23,27 +19,18 @@
   var vm = new Vue({
     el: '#app',
     data: {
-      data: null
+      asteroids: []
     },
-    // Vue instance life cycles
-    // beforeCreate:
-    // this is executed on first call
     created: function () {
-      this.fetchApod();
+      this.fetchAsteroids();
     },
-    // before{verbCurrent}
-    // {verbPast}
-    // where verb: created (reactive props & methods setup)
-    // mounted (before/ after root DOM element replaced with Vue)
-    // updated (whenver props change)
-    // destroyed (whe $.destroy is called, avoid)
     methods: {
-      fetchApod: function () {
+      fetchAsteroids: function () {
         var apiKey = 'lkgI9to0hRizfzk4xTAxtNTTFkkA4Mtq7y1yW5me';
-        var url = 'https://api.nasa.gov/planetary/apod?api_key=' + apiKey;
+        var url = 'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=' + apiKey;
         axios.get(url)
           .then(function (res) {
-            vm.data = res.data;
+            vm.asteroids = res.data.near_earth_objects.slice(0, 10);
           });
       }
     }
